@@ -3,10 +3,6 @@ package edu.miu.bloguser.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.miu.bloguser.dto.ErrorResponse;
 import edu.miu.bloguser.util.JWTUtils;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,16 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.Key;
 import java.util.ArrayList;
-
 
 @Component
 public class ApplicationAuthorizer extends OncePerRequestFilter {
-
     @Resource
     private JWTUtils jwtUtils;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
@@ -41,10 +33,8 @@ public class ApplicationAuthorizer extends OncePerRequestFilter {
         }
 
         try {
-
             String token = authorizationHeader.substring(7);
             String username = jwtUtils.parseToken(token);
-
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     username,
                     null,
