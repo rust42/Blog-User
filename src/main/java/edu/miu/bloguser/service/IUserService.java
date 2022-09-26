@@ -8,4 +8,5 @@ public interface IUserService {
     UserDto saveUser(SignupRequest userSaveDto);
     LoginResponse loginUser(LoginRequest loginRequest);
      VerifyDto verifyToken();
+     VerifyDto validateUsername(String username);
 }

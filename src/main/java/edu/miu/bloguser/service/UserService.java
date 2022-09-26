@@ -85,4 +85,11 @@ public class UserService implements IUserService {
         return modelMapper.map(user.get(), VerifyDto.class);
     }
 
+    public VerifyDto validateUsername(String username) {
+        Optional<User> user = userRepo.findByEmail(username);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("No such user found in the database.");
+        }
+        return modelMapper.map(user.get(), VerifyDto.class);
+    }
 }

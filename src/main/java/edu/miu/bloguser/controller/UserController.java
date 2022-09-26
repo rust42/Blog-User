@@ -30,8 +30,18 @@ public class UserController {
         return ResponseEntity.ok(userService.loginUser(login));
     }
 
+    /*
+    Verfies that the token header is correct
+    The header `Authorization`: "Bearer <token>" must be passed in order to authorize this request
+     */
     @PostMapping("/verify")
     ResponseEntity<VerifyDto> verifyToken(Authentication authentication) {
         return ResponseEntity.ok(userService.verifyToken());
     }
+
+    @PostMapping("/validate")
+    ResponseEntity<VerifyDto> verifyUsername(@RequestBody VerifyRequest verifyRequest) {
+        return ResponseEntity.ok(userService.validateUsername(verifyRequest.getEmail()));
+    }
+
 }
