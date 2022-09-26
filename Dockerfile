@@ -1,5 +1,10 @@
+FROM maven:latest as builder
+WORKDIR /build
+COPY . .
+RUN mvn clean install -DskipTests
+
+
 FROM openjdk:17.0.2-jdk as deploy
-MAINTAINER SANDEEP KOIRALA
-WORKDIR /user
-COPY ./target/*.jar user.jar
-CMD ["java","-jar","user.jar"]
+WORKDIR /app
+COPY --from=builder /build/target/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
