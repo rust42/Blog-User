@@ -3,6 +3,7 @@ package edu.miu.bloguser.service;
 import edu.miu.bloguser.dto.*;
 import edu.miu.bloguser.entity.User;
 import edu.miu.bloguser.exception.UserExistsException;
+import edu.miu.bloguser.exception.UserNotFoundException;
 import edu.miu.bloguser.repository.UserRepo;
 import edu.miu.bloguser.security.ApplicationAuthorizer;
 import edu.miu.bloguser.security.BlogUserDetail;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.net.http.HttpRequest;
+import java.util.Optional;
 
 @Service
 @Transactional(rollbackOn = {Exception.class})
@@ -75,9 +77,12 @@ public class UserService implements IUserService {
 
     public VerifyDto verifyToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        BlogUserDetail userDetail = (BlogUserDetail)authentication.getPrincipal();
-        User user = userDetail.getUser();
-        return modelMapper.map(user, VerifyDto.class);
+        String email = (String)authentication.getPrincipal();
+        Optional<User> user = userRepo.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("No such user found in the database.");
+        }
+        return modelMapper.map(user.get(), VerifyDto.class);
     }
 
 }

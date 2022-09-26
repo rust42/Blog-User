@@ -2,6 +2,7 @@ package edu.miu.bloguser.config;
 
 import edu.miu.bloguser.dto.ErrorResponse;
 import edu.miu.bloguser.exception.UserExistsException;
+import edu.miu.bloguser.exception.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,18 @@ public class RestExceptionHandlingAdvice extends ResponseEntityExceptionHandler 
         return new ResponseEntity<>(
                 new ErrorResponse(
                         HttpStatus.BAD_REQUEST,
+                        exception.getMessage(),
+                        request.getDescription(false)),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<ErrorResponse> unauthorizedRequestException(UserExistsException exception, WebRequest request) {
+        return new ResponseEntity<>(
+                new ErrorResponse(
+                        HttpStatus.UNAUTHORIZED,
                         exception.getMessage(),
                         request.getDescription(false)),
                 HttpStatus.BAD_REQUEST
